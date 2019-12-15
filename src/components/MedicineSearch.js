@@ -70,6 +70,10 @@ const MedicineSearch = props => {
     setResult(searchResult);
   }
 
+  if (searchResult === "not found") {
+    dispatch({ type: "LOADING", payload: false });
+  }
+
   return (
     <React.Fragment>
       <Segment placeholder style={{ marginTop: "30px", minHeight: "580px" }}>
