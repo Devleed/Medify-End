@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 
-import { getSubstituteMeds, searchFor } from "../actions";
+import { getSubstituteMeds, searchFor, getSimilarResults } from "../actions";
 import MedicineJSX from "./MedicineComponents/MedicineJSX";
 import Portfolio from "./homeComponents/Portfolio";
 import { Segment } from "semantic-ui-react";
 import PortfolioPlaceholder from "./PortfolioPlaceholder";
 
 // renders portfolio
-const renderPortfolio = (searchResult, sameFormulaMeds, isLoading) => {
+const renderPortfolio = (searchResult, sameFormulaMeds, isLoading, matched) => {
   let list = [];
   if (isLoading) {
     for (let i = 0; i < 1; i++) {
@@ -28,6 +28,16 @@ const renderPortfolio = (searchResult, sameFormulaMeds, isLoading) => {
       />
     );
   }
+  if (matched.length > 0) {
+    list.push(
+      <Portfolio
+        items={matched}
+        showButton={false}
+        key="1"
+        header="similar results"
+      />
+    );
+  }
   return list;
 };
 
@@ -35,6 +45,7 @@ const renderPortfolio = (searchResult, sameFormulaMeds, isLoading) => {
 const MedicineSearch = props => {
   // component's state
   const [result, setResult] = useState(null);
+  const [matched, setMatched] = useState([]);
 
   // accessing the redux store
   const searchResult = useSelector(({ searchResult }) => searchResult);
@@ -48,6 +59,7 @@ const MedicineSearch = props => {
       dispatch({ type: "LOADING", payload: true });
       const data = await searchFor(props.match.params.term);
       dispatch({ type: "SEARCH_RESULT", payload: data });
+      setMatched([]);
     })();
 
     // on unmounting
@@ -70,8 +82,11 @@ const MedicineSearch = props => {
     setResult(searchResult);
   }
 
-  if (searchResult === "not found") {
+  if (searchResult === "not found" && matched.length === 0) {
     dispatch({ type: "LOADING", payload: false });
+    getSimilarResults(props.match.params.term).then(data => {
+      setMatched(data);
+    });
   }
 
   return (
@@ -79,7 +94,7 @@ const MedicineSearch = props => {
       <Segment placeholder style={{ marginTop: "30px", minHeight: "580px" }}>
         <MedicineJSX medicine={searchResult} message="No results found" />
       </Segment>
-      {renderPortfolio(searchResult, sameFormulaMeds, isLoading)}
+      {renderPortfolio(searchResult, sameFormulaMeds, isLoading, matched)}
     </React.Fragment>
   );
 };

@@ -30,6 +30,49 @@ export const searchFor = async term => {
   return result;
 };
 
+// gets matching results from database
+export const getSimilarResults = async (term = "") => {
+  term = term.split("");
+  const snap = await firebase
+    .database()
+    .ref()
+    .child("medicines")
+    .once("value");
+  const matchedResults = [];
+  _.forIn(snap.val(), val => {
+    _.forIn(val, (value, key) => {
+      key = key.split("");
+      let formula = value.formula.split("");
+      if (
+        term
+          .slice(0, 2)
+          .join("")
+          .concat(term.slice(term.length - 2, term.length).join(""))
+          .toLowerCase() ===
+          key
+            .slice(0, 2)
+            .join("")
+            .concat(key.slice(key.length - 2, key.length).join(""))
+            .toLowerCase() ||
+        term
+          .slice(0, 2)
+          .join("")
+          .concat(term.slice(term.length - 2, term.length).join(""))
+          .toLowerCase() ===
+          formula
+            .slice(0, 2)
+            .join("")
+            .concat(formula.slice(formula.length - 2, formula.length).join(""))
+            .toLowerCase()
+      ) {
+        matchedResults.push({ name: key.join(""), ...value });
+      }
+    });
+  });
+  console.log(matchedResults);
+  return matchedResults;
+};
+
 // update single selected med
 export const getSingleMed = async (type = "", med = "") => {
   const snap = await firebase

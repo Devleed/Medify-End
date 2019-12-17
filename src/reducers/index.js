@@ -13,5 +13,5 @@ export default combineReducers({
   typeMedicines: getTypeMeds,
   selectedMed: getMed,
   searchResult: getSearchResults,
-  formulaMeds: getSubstitute
+  formulaMeds: getSubstitute,
 });
