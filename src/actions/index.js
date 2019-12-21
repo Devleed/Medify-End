@@ -113,3 +113,17 @@ export const getSubstituteMeds = async (formula = null) => {
   });
   return { ...result };
 };
+export const getAllData = async () => {
+  const snap = await firebase
+    .database()
+    .ref()
+    .child("medicines")
+    .once("value");
+  let result = [];
+  _.forIn(snap.val(), val => {
+    _.forIn(val, (val, key) => {
+      result.push(key.toLowerCase());
+    });
+  });
+  return result;
+};

@@ -60,6 +60,7 @@ const MedicineSearch = props => {
       const data = await searchFor(props.match.params.term);
       dispatch({ type: "SEARCH_RESULT", payload: data });
       setMatched([]);
+      dispatch({ type: "SUBSTITUE_MEDS", payload: {} });
     })();
 
     // on unmounting

@@ -6,6 +6,7 @@ import getTypeMeds from "./getTypeMeds";
 import getMed from "./getMed";
 import getSearchResults from "./getSearchResult";
 import getSubstitute from "./getSubstitute";
+import medNames from "./allMedNames";
 
 export default combineReducers({
   form: formReducer,
@@ -14,4 +15,5 @@ export default combineReducers({
   selectedMed: getMed,
   searchResult: getSearchResults,
   formulaMeds: getSubstitute,
+  medNames
 });

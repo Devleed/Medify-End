@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Router, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import history from "../history";
 import HomePage from "./homeComponents/HomePage";
@@ -9,8 +10,16 @@ import Footer from "./Footer";
 import medicineTypeHome from "./MedicineTypeComponents/MedicineTypeHome";
 import MedicineDisplay from "./MedicineComponents/MedicineDisplay";
 import MedicineSearch from "./MedicineSearch";
+import { getAllData } from "../actions";
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      const data = await getAllData();
+      dispatch({ type: "MED_NAMES", payload: data });
+    })();
+  }, [dispatch]);
   return (
     <div className="wrapper">
       <Router history={history}>
